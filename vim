@@ -1,1 +1,0 @@
-/home/jinya/.vim
