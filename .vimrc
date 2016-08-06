@@ -5,8 +5,22 @@ set ai
 syntax on
 set foldmethod=indent
 set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,cp936,gb2312,bigg5.euc-jp,euc-kr,latin1
+set langmenu=zh_CN.UTF-8
 set fileencoding=utf-8
+language messages zh_CN.UTF-8
 
+filetype plugin indent on
+"光标遇到折叠,折叠就打开
+set foldopen=all
+"光标离开就关闭
+set foldclose=all
+
+"显示中文引号
+set ambiwidth=double
+
+"设置搜索高亮
+set hlsearch
 "NERD配置
 autocmd vimenter * NERDTree
 autocmd StdinReadPre * let s:std_in=1
@@ -14,6 +28,7 @@ auto VimEnter * if argc() == 0 && !exists("s:stdin") | NERDTree | endif
 
 autocmd VimEnter * wincmd p
 map <C-n> :NERDTreeToggle<CR>
+map <M-m> :TlistToggle<CR>
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
