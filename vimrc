@@ -11,6 +11,7 @@ set fileencoding=utf-8
 set termencoding=utf-8
 language messages zh_CN.UTF-8
 
+filetype on
 filetype plugin indent on
 "光标遇到折叠,折叠就打开
 set foldopen=all
@@ -114,3 +115,84 @@ if &term == "tty"
 endif
 
 "set cinoptions = {0,1s,t0,n-2,p2s,(03s,=.5s,>1s,=1s,:1s
+
+"ag配置
+let g:ag_prg = "ag --vimgrep --smart-case"
+"将root=>r设置成ag搜索的工作目录
+let g:ag_working_path_mode = 'r'
+"设置搜索高亮
+let g:ag_highlight = 1
+"识别匹配的格式
+let g:ag_format = "%f:%l:%m"
+"设置窗口大小
+let g:ag_qhandler = "copen 20"
+
+"tagbar设置
+nnoremap <silent> <F9> :TagbarToggle<CR>
+"自动跳到tagbar当窗口打开时
+"f jump to Tagbar window when opening
+"j jump to Tagbar if already open
+"c close Tagbar on tag selection
+"TagbarOpen fj
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
+"remap the sort toggling functionality 
+let g:tagbar_map_togglesort = "r"
+let g:tagbar_ctags_bin = '/usr/bin/ctags'
+let g:tagbar_left = 1
+let g:tagbar_vertical = 30
+let g:tagbar_compact = 1
+let g:tagbar_width = 30
+"根据位置排序, 1则根据名称排序
+let g:tagbar_sort = 0
+"显示tagbar行号 0 no ; 1 abstract ; 2 relative ; -1 global
+let g:tagbar_show_linenumbers = 1
+"不显示非public的tagbar
+let g:tagbar_hide_nopublic = 1
+"自动扩展vim窗口
+let g:tagbar_expand = 1
+let g:tagbar_iconchars = ['▶', '▼']  
+let g:tagbar_autoshowtag = 1
+function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
+	let colour = a:current ? '%#StatusLine#' : '%#StatusLineNC#'
+    let flagstr = join(flags, '')
+    if flagstr != ''
+        let flagstr = '[' . flagstr . '] '
+    endif
+    return colour . '[' . sort . '] ' . flagstr . fname
+endfunction
+let g:tagbar_status_func = 'TagbarStatusFunc'
+highlight TagbarScope guifg=Green ctermfg=Green
+autocmd VimEnter * nested :call tagbar#autoopen(1)
+autocmd FileType * nested :call tagbar#autoopen(0)
+"当打开多窗口时保留本窗口的tagbar
+autocmd BufEnter * nested :call tagbar#autoopen(0)
+"autocmd FileType c,cpp nested :TagbarOpen
+
+"设置emotaion
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_landing_highlight = 1
+
+"tabular代码对齐
+let g:tabular_loaded = 1
+"等号对齐
+nmap <leader>bb :Tab /=<CR>
+"自定义对齐
+nmap <leader>bn :Tab /
+
+"syntastic 静态语法检查
+let g:syntastic_extra_filetypes = [ "make" , "gitcommit" ]
+let g:syntastic_php_checkers = [ "php" , "phpcs" , "phpmd" ]
+let g:syntastic_shell = "/bin/sh"
+set shell=/bin/sh
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = "⚠"
+let g:syntastic_check_on_open = 1
+
+"matchit
+let loaded_matchit = 1
+
+"indent guides
+nmap <silent> <Leader>ig <Plug>IndentGuidesToggle
+nmap <silent> <Leader>ie <Plug>IndentGuidesEnable
+nmap <silent> <Leader>id <Plug>IndentGuidesDisable
