@@ -1,7 +1,7 @@
 set nu
 set ts=4
 set st=4
-set ai
+"set ai
 syntax on
 set foldmethod=indent
 set encoding=utf-8
@@ -56,8 +56,15 @@ call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 "ctrlp配置
-let g:ctrlp_map = '<c-p>'
+let g:ctrlp_map = ',,'
+"let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_open_multiple_files = 'v'
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.o
+let g:ctrlp_custom_ignore = {
+	\ 'dir' : '\v[\/]\.(git)$',
+	\ 'file' : '\v\.(so|o|gif|log|jpg|png|jpeg)$',
+	\ }
 "mru配置
 
 "tags
@@ -98,15 +105,15 @@ vmap <C-c> "+y
 nnoremap <silent><F4> :TlistToggle<CR>
 let Tlist_Show_One_File = 1 "show current file tag
 let Tlist_Exit_OnlyWindow = 1 "exit vim if tag is the last window 
-let TList_Use_Right_Window = 1 "right show the window
-let TList_File_Fold_Auto_Close = 1 "auto fold
-let TList_Auto_Open = 0
-let TList_Auto_Update = 1
-let TList_Hightlight_Tag_On_BufEnter = 1
-let TList_Enable_Fold_Column = 0
-let TList_Process_File_Always = 1
-let TLIst_Display_Prototype = 0
-let TLIst_Compat_Format = 1
+let Tlist_Use_Right_Window = 1 "right show the window
+let Tlist_File_Fold_Auto_Close = 1 "auto fold
+let Tlist_Auto_Open = 0
+let Tlist_Auto_Update = 1
+let Tlist_Hightlight_Tag_On_BufEnter = 1
+let Tlist_Enable_Fold_Column = 0
+let Tlist_Process_File_Always = 1
+let Tlist_Display_Prototype = 0
+let Tlist_Compat_Format = 1
 
 if &term == "tty"
 	set t_Co = 8
@@ -163,10 +170,10 @@ function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
 endfunction
 let g:tagbar_status_func = 'TagbarStatusFunc'
 highlight TagbarScope guifg=Green ctermfg=Green
-autocmd VimEnter * nested :call tagbar#autoopen(1)
-autocmd FileType * nested :call tagbar#autoopen(0)
+"autocmd VimEnter * nested :call tagbar#autoopen(1)
+"autocmd FileType * nested :call tagbar#autoopen(0)
 "当打开多窗口时保留本窗口的tagbar
-autocmd BufEnter * nested :call tagbar#autoopen(0)
+"autocmd BufEnter * nested :call tagbar#autoopen(0)
 "autocmd FileType c,cpp nested :TagbarOpen
 
 "设置emotaion
@@ -196,3 +203,65 @@ let loaded_matchit = 1
 nmap <silent> <Leader>ig <Plug>IndentGuidesToggle
 nmap <silent> <Leader>ie <Plug>IndentGuidesEnable
 nmap <silent> <Leader>id <Plug>IndentGuidesDisable
+"自定义命令模式
+map mm :shell<CR>
+
+"if v:lang =~ "^zh_CN"
+"	set encoding=chinese
+"	set termencoding=chinese
+"endif
+
+"平台判断
+function! GetSystem()
+	if (has("win32") || has("win95") || has("win64") || has("win16"))
+		return "windows"
+	elseif has("unix")
+		return "linux"
+	elseif has("mac")
+		return "mac"
+	endif
+endfunction
+"获取光标处匹配
+function! GetPatternAtCursor(pat)
+	let col = col('.') - 1
+	let line = getline('.')
+	let ebeg = -1
+	let cont = match(line , a:pat , 0)
+	while (ebeg >= 0 || (0 <= cont) && (cont <= col))
+		let contn = matchend(line , a:pat , cont)
+		if (cont <= col) && (col < contn)
+			let ebeg = match(line , a:pat , cont)
+			let elen = contn - ebeg
+			break
+		else
+			let cont = match(line , a:pat , contn)
+		endif
+	endwh
+	if ebeg >= 9
+		return strpart(line , ebeg , elen)
+	else
+		return ""
+	endif
+endfunction
+
+"打开链接
+function! OpenUrl()
+	let s:url = GetPatternAtCursor('\v(https?://|ftp://|file:/{3}|www\.)((\w|-)+\.)+(\w|-)+(:\d+)?(/(\w|[~@#$%^&+=/.?-])+)?')	
+	"echo s:url
+	if s:url == ""
+		echo echohl WarningMsg
+		echomsg '在光标处未发现url'
+		echohl None
+	else
+		if GetSystem() == "windows"
+			call system("explorer" . s:url)
+		else
+			call system("firefox" . s:url . "&")
+		endif
+	endif
+endfunction
+nmap <C-LeftMouse> :call OpenUrl()<CR>
+
+"vim-path
+execute pathogen#infect('stuff/{}')
+
