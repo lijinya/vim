@@ -1,7 +1,8 @@
 set nu
 set ts=4
 set st=4
-"set ai
+set ai
+set si
 syntax on
 set foldmethod=indent
 set encoding=utf-8
@@ -264,4 +265,4 @@ nmap <C-LeftMouse> :call OpenUrl()<CR>
 
 "vim-path
 execute pathogen#infect('stuff/{}')
-
+set expandtab
