@@ -31,7 +31,7 @@ auto VimEnter * if argc() == 0 && !exists("s:stdin") | NERDTree | endif
 
 autocmd VimEnter * wincmd p
 map <C-n> :NERDTreeToggle<CR>
-map <M-m> :TlistToggle<CR>
+"map <M-m> :TlistToggle<CR>
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
@@ -103,7 +103,6 @@ nnoremap <C-l> <C-w>l
 vmap <C-c> "+y
 
 "tags
-nnoremap <silent><F4> :TlistToggle<CR>
 let Tlist_Show_One_File = 1 "show current file tag
 let Tlist_Exit_OnlyWindow = 1 "exit vim if tag is the last window 
 let Tlist_Use_Right_Window = 1 "right show the window
@@ -216,9 +215,9 @@ map mm :shell<CR>
 function! GetSystem()
 	if (has("win32") || has("win95") || has("win64") || has("win16"))
 		return "windows"
-	elseif has("unix")
+	elseif has("linux")
 		return "linux"
-	elseif has("mac")
+	elseif has("unix")
 		return "mac"
 	endif
 endfunction
@@ -266,3 +265,10 @@ nmap <C-LeftMouse> :call OpenUrl()<CR>
 "vim-path
 execute pathogen#infect('stuff/{}')
 set expandtab
+if GetSystem() == "mac"
+    echo "mac"
+    map ;; :TlistToggle<CR>
+elseif GetSystem() == "linux"
+    echo "linux"
+    nnoremap <silent><F4> :TlistToggle<CR>
+endif
