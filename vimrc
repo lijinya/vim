@@ -1,8 +1,6 @@
 set nu
 set ts=4
 set st=4
-set ai
-set si
 syntax on
 set foldmethod=indent
 set encoding=utf-8
@@ -215,10 +213,13 @@ map mm :shell<CR>
 function! GetSystem()
 	if (has("win32") || has("win95") || has("win64") || has("win16"))
 		return "windows"
-	elseif has("linux")
-		return "linux"
 	elseif has("unix")
-		return "mac"
+        let s:uname = system("uname -s")
+        if s:uname =~ "Darwin"
+        	return "mac"
+        else
+            return "linux"
+        endif
 	endif
 endfunction
 "获取光标处匹配
@@ -266,9 +267,7 @@ nmap <C-LeftMouse> :call OpenUrl()<CR>
 execute pathogen#infect('stuff/{}')
 set expandtab
 if GetSystem() == "mac"
-    echo "mac"
     map ;; :TlistToggle<CR>
 elseif GetSystem() == "linux"
-    echo "linux"
     nnoremap <silent><F4> :TlistToggle<CR>
 endif
